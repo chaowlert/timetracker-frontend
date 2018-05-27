@@ -1,0 +1,94 @@
+<div class="loading-shade" *ngIf="isLoadingResults">
+  <mat-spinner></mat-spinner>
+</div>
+<mat-card>
+  <mat-card-title>Input data, and click add</mat-card-title>
+  <mat-card-content>
+    <form action="/add" (ngSubmit)="submit();addForm.resetForm()" method="POST" #addForm="ngForm">
+      <mat-form-field class="email">
+        <input type="email" matInput placeholder="Email" name="email" required email [(ngModel)]="inputEmail" #inputEmailCtrl="ngModel"
+        />
+        <mat-error *ngIf="inputEmailCtrl.errors && inputEmailCtrl.errors['required']">
+          Email is
+          <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="inputEmailCtrl.errors && inputEmailCtrl.errors['email']">
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker" placeholder="Start date" name="startDate" required [(ngModel)]="startDate" #startDateCtrl="ngModel">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error *ngIf="startDateCtrl.errors && startDateCtrl.errors['required']">
+          Start date is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="time">
+        <mat-select placeholder="Hour" name="startHour" required [(ngModel)]="startHour" #startHourCtrl="ngModel">
+          <mat-option *ngFor="let hr of hrs" [value]="hr">
+            {{ hr | number:'2.0-0' }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="startHourCtrl.errors && startHourCtrl.errors['required']">
+          Hour is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="time">
+        <mat-select placeholder="Minute" name="startMinute" required [(ngModel)]="startMinute" #startMinuteCtrl="ngModel">
+          <mat-option *ngFor="let mm of mms" [value]="mm">
+            {{ mm | number:'2.0-0' }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="startMinuteCtrl.errors && startMinuteCtrl.errors['required']">
+          Minute is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <br/>
+      <mat-form-field>
+        <input matInput [matDatepicker]="picker2" placeholder="End date" name="endDate" required [(ngModel)]="endDate" #endDateCtrl="ngModel">
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+        <mat-error *ngIf="endDateCtrl.errors && endDateCtrl.errors['required']">
+          End date is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="time">
+        <mat-select placeholder="Hour" name="endHour" required [(ngModel)]="endHour" #endHourCtrl="ngModel">
+          <mat-option *ngFor="let hr of hrs" [value]="hr">
+            {{ hr | number:'2.0-0' }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="endHourCtrl.errors && endHourCtrl.errors['required']">
+          Hour is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="time">
+        <mat-select placeholder="Minute" name="endMinute" required [(ngModel)]="endMinute" #endMinuteCtrl="ngModel">
+          <mat-option *ngFor="let mm of mms" [value]="mm">
+            {{ mm | number:'2.0-0' }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="endMinuteCtrl.errors && endMinuteCtrl.errors['required']">
+          Minute is
+          <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+      <br/>
+      <input type="hidden" name="start" id="start" />
+      <input type="hidden" name="end" id="end" />
+      <button mat-raised-button type="submit" color="primary" [disabled]="!addForm.valid">
+        <mat-icon>add</mat-icon>Add
+      </button>
+    </form>
+    <div th:if="${added != null}">
+      <input type="hidden" id="added" name="added" th:value="${added.email}" />
+    </div>
+  </mat-card-content>
+</mat-card>

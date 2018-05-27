@@ -1,0 +1,10 @@
+timetracker:
+  url: http://localhost:8080
+  pageSize: 10
+server:
+  port: 8081
+---
+spring:
+  profiles: container
+timetracker:
+  url: ${TIMETRACKER}

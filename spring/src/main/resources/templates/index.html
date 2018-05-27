@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Web</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <noscript id="appContent">
+    <mat-tab-group th:attr="[selectedIndex]=${added == null ? 0 : 1}">
+      <mat-tab label="Time records">
+        <mat-card>
+          <mat-card>
+            <mat-card-title>Input email and click search</mat-card-title>
+            <mat-card-content>
+              <form action="/search" (ngSubmit)="submit($event)" method="POST">
+                <mat-form-field class="email">
+                  <input type="email" matInput placeholder="Email" name="email" required email [(ngModel)]="email" #emailCtrl="ngModel" />
+                  <mat-error *ngIf="emailCtrl.errors && emailCtrl.errors.required">
+                    Email is
+                    <strong>required</strong>
+                  </mat-error>
+                  <mat-error *ngIf="emailCtrl.errors && emailCtrl.errors.email">
+                    Please enter a valid email address
+                  </mat-error>
+                </mat-form-field>
+                <button mat-raised-button type="submit" color="primary" [disabled]="emailCtrl.errors">
+                  <mat-icon>search</mat-icon>Search
+                </button>
+              </form>
+            </mat-card-content>
+          </mat-card>
+          <br/>
+          <div th:if="${records != null}">
+            <form action="/search" method="POST" (ngSubmit)="submit($event)">
+              <mat-card th:if="${records.size() > 0}">
+                <mat-card-title>Results</mat-card-title>
+                <mat-card-content>
+                  <table class="mat-elevation-z8 mat-table">
+                    <thead>
+                      <tr class="mat-header-row">
+                        <th class="mat-header-cell"> Email </th>
+                        <th class="mat-header-cell"> Start time </th>
+                        <th class="mat-header-cell"> End time </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="mat-row" th:each="record : ${records}">
+                        <td class="mat-cell" th:text="${record.email}"> </td>
+                        <td class="mat-cell" th:text="${#dates.format(record.start, 'dd.MM.yyyy HH:mm')}"> </td>
+                        <td class="mat-cell" th:text="${#dates.format(record.end, 'dd.MM.yyyy HH:mm')}"> </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </mat-card-content>
+                <mat-card-actions>
+                  <input type="hidden" name="email" th:value="${param.email}" />
+                  <input type="hidden" name="page" id="page" th:value="${page}" />
+                  <button mat-mini-fab type="submit" (click)="navPage(-1)" class="btn" color="primary" th:disabled="${!canBack}">
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                  </button>
+                  Page
+                  <span th:text="${page}"></span>
+                  <button mat-mini-fab type="submit" (click)="navPage(1)" name="action" value="next" class="btn" color="primary" th:disabled="${!canNext}">
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            </form>
+            <mat-card th:if="${records.size() == 0}">
+              <mat-card-title>No Data</mat-card-title>
+            </mat-card>
+          </div>
+        </mat-card>
+      </mat-tab>
+      <mat-tab label="Add time tracking">
+        <mat-card>
+          <mat-card-title>Input data, and click add</mat-card-title>
+          <mat-card-content>
+            <form action="/add" (ngSubmit)="submit($event)" method="POST" #addForm="ngForm">
+              <mat-form-field class="email">
+                <input type="email" matInput placeholder="Email" name="email" required email [(ngModel)]="inputEmail" #inputEmailCtrl="ngModel"
+                />
+                <mat-error *ngIf="inputEmailCtrl.errors && inputEmailCtrl.errors.required">
+                  Email is
+                  <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="inputEmailCtrl.errors && inputEmailCtrl.errors.email">
+                  Please enter a valid email address
+                </mat-error>
+              </mat-form-field>
+              <br/>
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker" placeholder="Start date" name="startDate" required [(ngModel)]="startDate" #startDateCtrl="ngModel">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="startDateCtrl.errors && startDateCtrl.errors.required">
+                  Start date is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="time">
+                <mat-select placeholder="Hour" name="startHour" required [(ngModel)]="startHour" #startHourCtrl="ngModel">
+                  <mat-option *ngFor="let hr of hrs" [value]="hr">
+                    {{ hr | number:'2.0-0' }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="startHourCtrl.errors && startHourCtrl.errors.required">
+                  Hour is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="time">
+                <mat-select placeholder="Minute" name="startMinute" required [(ngModel)]="startMinute" #startMinuteCtrl="ngModel">
+                  <mat-option *ngFor="let mm of mms" [value]="mm">
+                    {{ mm | number:'2.0-0' }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="startMinuteCtrl.errors && startMinuteCtrl.errors.required">
+                  Minute is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <br/>
+              <mat-form-field>
+                <input matInput [matDatepicker]="picker2" placeholder="End date" name="endDate" required [(ngModel)]="endDate" #endDateCtrl="ngModel">
+                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+                <mat-error *ngIf="endDateCtrl.errors && endDateCtrl.errors.required">
+                  End date is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="time">
+                <mat-select placeholder="Hour" name="endHour" required [(ngModel)]="endHour" #endHourCtrl="ngModel">
+                  <mat-option *ngFor="let hr of hrs" [value]="hr">
+                    {{ hr | number:'2.0-0' }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="endHourCtrl.errors && endHourCtrl.errors.required">
+                  Hour is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="time">
+                <mat-select placeholder="Minute" name="endMinute" required [(ngModel)]="endMinute" #endMinuteCtrl="ngModel">
+                  <mat-option *ngFor="let mm of mms" [value]="mm">
+                    {{ mm | number:'2.0-0' }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="endMinuteCtrl.errors && endMinuteCtrl.errors.required">
+                  Minute is
+                  <strong>required</strong>
+                </mat-error>
+              </mat-form-field>
+              <br/>
+              <input type="hidden" name="start" id="start" />
+              <input type="hidden" name="end" id="end" />
+              <button mat-raised-button type="submit" color="primary" [disabled]="!addForm.valid" (click)="addRecord()">
+                <mat-icon>add</mat-icon>Add
+              </button>
+            </form>
+            <div th:if="${added != null}">
+              <input type="hidden" id="added" name="added" th:value="${added.email}" />
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-tab>
+    </mat-tab-group>
+  </noscript>
+  <script>
+    var mainTemplate = document.getElementById('appContent');
+    window.mainTemplate = mainTemplate.innerText;
+
+  </script>
+  <app-root></app-root>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+
+</html>

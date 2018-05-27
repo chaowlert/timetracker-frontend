@@ -1,0 +1,13 @@
+version: '3'
+
+services: 
+  timetracker:
+    image: alirizasaral/timetracker:1
+  timetracker-frontend:
+    image: chaowlert/timetracker-frontend
+    depends_on:
+      - timetracker
+    ports:
+      - 8081:8081
+    environment:
+      - TIMETRACKER=http://timetracker:8080

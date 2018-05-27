@@ -1,0 +1,82 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+table.mat-table {
+  border-spacing: 0
+}
+
+tr.mat-header-row {
+  height: 56px
+}
+
+tr.mat-footer-row,
+tr.mat-row {
+  height: 48px
+}
+
+th.mat-header-cell {
+  text-align: left
+}
+
+td.mat-cell,
+td.mat-footer-cell,
+th.mat-header-cell {
+  padding: 0;
+  border-bottom-width: 1px;
+  border-bottom-style: solid
+}
+
+td.mat-cell:first-child,
+td.mat-footer-cell:first-child,
+th.mat-header-cell:first-child {
+  padding-left: 24px
+}
+
+td.mat-cell:last-child,
+td.mat-footer-cell:last-child,
+th.mat-header-cell:last-child {
+  padding-right: 24px
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.email {
+  width: 400px;
+  margin-right: 10px;
+}
+
+.email input {
+  width: 300px;
+}
+
+.time {
+  width: 100px;
+  margin-left: 4px;
+}
+
+.btn {
+  margin: 5px;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-paginator-range-label {
+  display: none !important;
+}
+
+[hidden] {
+  display: none !important;
+}
